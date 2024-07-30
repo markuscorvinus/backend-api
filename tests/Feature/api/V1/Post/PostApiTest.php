@@ -50,7 +50,6 @@ class PostApiTest extends TestCase
         //load data in db
         $dummy = Post::factory()->make();
 
-
         //call index endpoint
         $response = $this->json('post', '/api/posts/', $dummy->toArray());
 
@@ -63,6 +62,26 @@ class PostApiTest extends TestCase
 
         $result->each(function ($value, $field) use ($dummy) {
             $this->assertSame(data_get($dummy, $field), $value, 'Fillable is not the same');
+        });
+    }
+
+    public function test_update(): void
+    {
+        //Event::fake();
+        //load data in db
+        $recordToUpdate = Post::factory()->create();
+        $userInput = Post::factory()->make();
+
+        $fieldsToUpdate = collect((new Post())->getFillable());
+
+        $fieldsToUpdate->each(function ($fieldname) use ($recordToUpdate, $userInput) {
+            $response = $this->json('patch', 'api/posts/' . $recordToUpdate->id, [
+                $fieldname => data_get($userInput, $fieldname),
+            ]);
+
+            $result = $response->assertStatus(200)->json('data');
+
+            $this->assertSame(data_get($userInput, $fieldname), data_get($recordToUpdate->refresh(), $fieldname), 'Failed to update Model');
         });
     }
 }
