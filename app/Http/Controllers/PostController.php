@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GeneralJsonException;
+use App\Http\Requests\StorePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\Post\PostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PostController extends Controller
@@ -25,9 +27,13 @@ class PostController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @param StorePostRequest $request
+     * @return PostResource
      */
-    public function store(PostService $postService, Request $request)
+    public function store(PostService $postService, StorePostRequest $request)
     {
+        Validator::make()->validateString('test', 123);
         $posts = $postService->createPosts($request);
         return new PostResource($posts);
     }

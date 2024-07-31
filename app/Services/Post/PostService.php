@@ -18,6 +18,7 @@ class PostService
 
     public function createPosts($attributes)
     {
+
         return DB::transaction(function () use ($attributes) {
             $posts = Post::query()->create([
                 'title' => $attributes->title,
