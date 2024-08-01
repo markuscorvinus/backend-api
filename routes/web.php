@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\RoutePath;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
+Route::get(RoutePath::for('password.reset', '/reset-password/{token}'), function ($token) {
+    return $token;
+})->middleware(['guest:' . config('fortify.guard')])
+    ->name('password.reset');
 
 if (\Illuminate\Support\Facades\App::environment('local')) {
     Route::get('/playground', function () {
