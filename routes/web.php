@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/app', function () {
+    return view('app');
+});
+
 Route::get(RoutePath::for('password.reset', '/reset-password/{token}'), function ($token) {
     return $token;
 })->middleware(['guest:' . config('fortify.guard')])

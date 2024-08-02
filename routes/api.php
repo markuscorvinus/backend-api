@@ -42,7 +42,10 @@ Route::delete('/users/{id}', function (User $id) {
 require __DIR__ . '/api/resourceName.php';
 
 //for looping all api/v1/ routes files, use iterator
-RouteHelper::requireDirectory(__DIR__ . '/api/');
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        RouteHelper::requireDirectory(__DIR__ . '/api/');
+    });
 
 
 // Route::get('/users', [UserController::class, 'index']);
