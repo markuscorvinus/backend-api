@@ -13,42 +13,59 @@
 
     <script>
         function getCookie(name){
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parts.pop().split(';').shift();
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                return parts.pop().split(';').shift();
+            }
         }
-    }
-    
-    function login(){
-        const csrfToken = decodeURIComponent(getCookie('XSRF-TOKEN'));
-        console.log(`${csrfToken}`  );
 
-        return fetch('/login', {
+        function request(url, options){
+            // get cookie
+            const csrfToken = getCookie('XSRF-TOKEN');
+            return fetch(url, {
+                headers: {
+                    'content-type': 'application/json',
+                    'accept': 'application/json',
+                    'referer':'127.0.0.1:8000',
+                    'X-XSRF-TOKEN': decodeURIComponent(csrfToken),
+                },
+                credentials: 'include',
+                ...options,
+            })
+        }
+
+        function logout(){
+            return request('/logout', {
+                method: 'POST'
+            });
+        }
+    
+        function login(){
+            const csrfToken = decodeURIComponent(getCookie('XSRF-TOKEN'));
+            
+            return request('/login', {
+                method: "POST",
+                body: JSON.stringify({
+                    email: "hackerben@test.com",
+                    password: "hackerben"
+                })
+            })
+        }
+
+        fetch('/sanctum/csrf-cookie', {
             headers: {
                 'content-type': 'application/json',
-                'accept': 'application/json',
-                'x-xsrf-token': csrfToken
+                'accept': 'application/json'
             },
-            credentials: 'include',
-            method: "POST",
-            body: JSON.stringify({
-                email: "hackerben@test.com",
-                password: "hackerben"
-            })
-                
-        })
-    }
-
-    fetch('/sanctum/csrf-cookie', {
-        headers: {
-            'content-type': 'application/json',
-            'accept': 'application/json'
-        },
-        credentials: 'include'
-    }).then(() => {
-        return login();
-    });
+            credentials: 'include'
+        }).then(() => {
+            return logout();
+        }).then(() => {
+            return login();
+        }).then(() => {
+            request('/api/users');
+        });
 
     </script>
 

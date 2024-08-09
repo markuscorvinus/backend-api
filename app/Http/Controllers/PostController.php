@@ -7,7 +7,9 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\Post\PostService;
+use Illuminate\Http\JsonResponse as HttpJsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -66,5 +68,17 @@ class PostController extends Controller
             return new JsonResponse(['data' => 'failed'], 400);
         }
         return new JsonResponse(['data' => $deleted]);
+    }
+
+    /**
+     * Share the specified resource in storage.
+     */
+    public function share(Post $post, Request $request, PostService $postService)
+    {
+        $url = URL::temporarySignedRoute('shared.post', now()->addDays(30), ['post' => $post->id]);
+
+        return new HttpJsonResponse([
+            'data' => $url
+        ]);
     }
 }

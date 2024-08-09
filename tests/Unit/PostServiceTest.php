@@ -3,11 +3,22 @@
 namespace Tests\Unit;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Services\Post\PostService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PostServiceTest extends TestCase
-{
+{   
+    use RefreshDatabase;
+
+    public function setUp(): void
+    {   
+        parent::setUp();
+        $user = User::factory()->make();
+        $this->actingAs($user);
+    }
+
     /**
      * A basic unit test example.
      */
@@ -15,6 +26,7 @@ class PostServiceTest extends TestCase
     {
         //1 define the goal
         //test if create will actually create a record in db
+        
 
         //2 replicate the env
         $postService = $this->app->make(PostService::class);

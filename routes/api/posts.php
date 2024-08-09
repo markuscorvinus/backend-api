@@ -12,3 +12,5 @@ Route::post('/posts', [PostController::class, 'store'])->name('create.post');
 Route::patch('/posts/{post}', [PostController::class, 'update']);
 
 Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+
+Route::post('/posts/{post}/share', [PostController::class, 'share']);

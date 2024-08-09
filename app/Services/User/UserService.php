@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 class UserService
 {
     public function allPosts($attributes)
-    {
+    {   
+        $this->actingAs(User::find(202));
         $perPage = $attributes['page_no'] ?? 10;
         $posts = Post::query()->paginate($perPage);
 
